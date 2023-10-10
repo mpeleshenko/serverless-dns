@@ -348,9 +348,14 @@ export default class RethinkPlugin {
     if (isGwReq) io.gatewayAnswersOnly(envutil.gwip4(), envutil.gwip6());
 
     try {
-      const [qpacket, ecsdropped] = dnsutil.dropECS(dnsutil.decode(question));
+      let qpacket = dnsutil.decode(question);
+      let ecsdropped;
+      let ecsadded;
+
+      [qpacket, ecsdropped] = dnsutil.dropECS(qpacket);
+      [qpacket, ecsadded] = dnsutil.addECS(qpacket, request);
       // if ecs was removed, then re-encode the question
-      if (ecsdropped) {
+      if (ecsdropped || ecsadded) {
         question = dnsutil.encode(qpacket);
       }
 

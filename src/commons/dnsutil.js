@@ -10,6 +10,7 @@ import * as dnslib from "@serverless-dns/dns-parser";
 import * as envutil from "./envutil.js";
 import * as util from "./util.js";
 import * as bufutil from "./bufutil.js";
+import * as iplib from "@serverless-dns/dns-parser/lib/ip.js";
 
 // dns packet constants (in bytes)
 // tcp msgs prefixed with 2-octet headers indicating request len in bytes
@@ -211,6 +212,65 @@ export function dropECS(packet) {
     a.options = filtered;
   }
   return [packet, rmv];
+}
+
+export function addECS(packet, req) {
+  let add = false;
+  if (util.emptyObj(packet)) return [packet, add];
+  let clientIp = req.headers.get("CF-Connecting-IP");
+  // No client IP found in request
+  if (util.emptyString(clientIp)) return [packet, add];
+
+  const isIpv6 = iplib.ip.isIPv6(clientIp);
+
+  let ecsOption;
+  if (isIpv6) {
+    // IPv6
+    ecsOption = {
+      "code": 8,
+      "type": "CLIENT_SUBNET",
+      "family": 2,
+      "sourcePrefixLength": 56,
+      "scopePrefixLength": 0,
+      "ip": iplib.ip.cidr(clientIp + "/56")
+    }
+  } else {
+    // IPv4
+    ecsOption = {
+      "code": 8,
+      "type": "CLIENT_SUBNET",
+      "family": 1,
+      "sourcePrefixLength": 24,
+      "scopePrefixLength": 0,
+      "ip": iplib.ip.cidr(clientIp + "/24")
+    }
+  }
+
+  // Try to find existing OPT additional
+  let optAdditional;
+  for (const a of packet.additionals) {
+    if (!optAnswer(a)) continue;
+    optAdditional = a;
+  }
+  if (util.emptyObj(optAdditional)) {
+    // OPT additional does not exist, so add one
+    optAdditional = {
+      "name": ".",
+      "type": "OPT",
+      "udpPayloadSize": 4096,
+      "extendedRcode": 0,
+      "ednsVersion": 0,
+      "flags": 0,
+      "flag_do": false,
+      "options": []
+    }
+    packet.additionals.push(optAdditional);
+  }
+
+  optAdditional.options.push(ecsOption);
+  add = true;
+
+  return [packet, add];
 }
 
 // dup: isAnswerOPT
