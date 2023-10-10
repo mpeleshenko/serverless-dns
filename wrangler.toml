@@ -46,6 +46,8 @@ minify = true
 LOG_LEVEL = "info"
 WORKER_ENV = "production"
 CLOUD_PLATFORM = "cloudflare"
+CF_DNS_RESOLVER_URL = "https://dns.google.com/dns-query"
+MAX_DNS_RESOLVER_URL = "https://dns.google.com/dns-query"
 
 ##################
 #------ONE-------#
