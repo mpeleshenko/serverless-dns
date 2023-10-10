@@ -110,7 +110,7 @@ if [ $runtime = "deno" ] || [ $runtime = "d" ]; then
 elif [ $runtime = "workers" ] || [ $runtime = "w" ]; then
   echo "note: wrangler v1.16+ required";
   echo "using `which wrangler`";
-  start="npx wrangler dev --local";
+  start="npx wrangler dev --local --local-protocol https";
 elif [ $runtime = "fastly" ] || [ $runtime = "f" ]; then
   echo "note: Fastly CLI required";
   echo "using `which fastly`";
