@@ -442,11 +442,11 @@ function isHex6(str) {
   return /^[a-f0-9:.]+$/i.test(str);
 }
 
-function maybeIP6(str) {
+export function maybeIP6(str) {
   return !emptyString(str) && str.split(":").length > 3 && isHex6(str);
 }
 
-function maybeIP4(str) {
+export function maybeIP4(str) {
   return !emptyString(str) && str.split(".").length === 4 && isNumeric4(str);
 }
 

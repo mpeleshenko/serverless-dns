@@ -221,7 +221,7 @@ export function addECS(packet, req) {
   // No client IP found in request
   if (util.emptyString(clientIp)) return [packet, add];
 
-  const isIpv6 = iplib.ip.isV6Format(clientIp);
+  const isIpv6 = util.maybeIP6(clientIp);
 
   let ecsOption;
   if (isIpv6) {
