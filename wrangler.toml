@@ -40,13 +40,6 @@ MAX_DNS_RESOLVER_URL = "https://dns.google.com/dns-query"
 [env.prod]
 name = "basic-unbound"
 minify = true
-routes = [
-  "sky.rethinkdns.com/*",
-  "sky.bravedns.com/*",
-  "basic.rethinkdns.com/*",
-  "basic.bravedns.com/*",
-  "free.bravedns.com/*",
-]
 # vars are not inherited
 # workers/platform/environment-variables#environment-variables-via-wrangler
 [env.prod.vars]
@@ -61,10 +54,6 @@ CLOUD_PLATFORM = "cloudflare"
 name = "dns-one"
 logpush = true
 minify = true
-routes = [
-  "one.rethinkdns.com/*",
-  "one.bravedns.com/*",
-]
 analytics_engine_datasets = [
     { binding = "METRICS", dataset = "ONE_M0" },
     { binding = "BL_METRICS", dataset = "ONE_BL0" }
