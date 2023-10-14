@@ -273,6 +273,21 @@ export function addECS(packet, req) {
   return [packet, add];
 }
 
+export function getECS(packet) {
+  if (util.emptyObj(packet)) return [null, null];
+  if (util.emptyArray(packet.additionals)) return [null, null];
+  for (const a of packet.additionals) {
+    if (!optAnswer(a)) continue;
+
+    for (const opt of a.options) {
+      if (opt.code === 8 || opt.type === "CLIENT_SUBNET") {
+        return [opt.ip, opt.sourcePrefixLength]
+      }
+    }
+  }
+  return [null, null];
+}
+
 // dup: isAnswerOPT
 export function optAnswer(a) {
   if (util.emptyObj(a) || util.emptyString(a.type)) return false;

@@ -10,6 +10,7 @@ import * as util from "../commons/util.js";
 import * as dnsutil from "../commons/dnsutil.js";
 import * as envutil from "../commons/envutil.js";
 import * as pres from "./plugin-response.js";
+import {getECS} from "../commons/dnsutil.js";
 
 const minTtlSec = 30; // 30s
 const maxTtlSec = 180; // 3m
@@ -124,7 +125,9 @@ function makeId(packet) {
   if (!dnsutil.hasSingleQuestion(packet)) return null;
   const q = packet.questions[0];
   const addn = dnsutil.hasDnssecOk(packet) ? ":dnssec" : "";
-  return dnsutil.normalizeName(q.name) + ":" + q.type + addn;
+  const [ecsip, ecsprefix] = getECS(packet);
+  const ecsaddn = !util.emptyObj(ecsip) ? ":" + ecsip + ":" + ecsprefix: "";
+  return dnsutil.normalizeName(q.name) + ":" + q.type + ecsaddn + addn;
 }
 
 /**

@@ -139,7 +139,8 @@ export function dohResolvers() {
   if (isWorkers()) {
     // upstream to two resolvers on workers; since egress is free,
     // faster among the 2 should help lower tail latencies at zero-cost
-    return [primaryDohResolver(), secondaryDohResolver()];
+    // upstream just to the primary one to maintain Google DNS ECS capability
+    return [primaryDohResolver()];
   }
 
   return [primaryDohResolver()];

@@ -148,8 +148,8 @@ export default class DNSResolver {
     const rxid = ctx.rxid;
     const req = ctx.request;
     const blInfo = ctx.userBlocklistInfo;
-    const rawpacket = ctx.requestBodyBuffer;
-    const decodedpacket = ctx.requestDecodedDnsPacket;
+    let rawpacket = ctx.requestBodyBuffer;
+    let decodedpacket = ctx.requestDecodedDnsPacket;
     const userDns = ctx.userDnsResolverUrl;
     const dispatcher = ctx.dispatcher;
     const userBlockstamp = ctx.userBlockstamp;
@@ -186,6 +186,12 @@ export default class DNSResolver {
       fromMax = true;
       this.log.d(rxid, "bg-bw-init; upstream to max", alt);
       dispatcher(this.bw.init(rxid));
+      // Drop ECS for max query
+      let ecsdropped;
+      [decodedpacket, ecsdropped] = dnsutil.dropECS(decodedpacket);
+      if (ecsdropped) {
+        rawpacket = dnsutil.encode(decodedpacket);
+      }
       promisedTasks = await Promise.allSettled([
         Promise.resolve(), // placeholder promise that never rejects
         this.resolveDnsUpstream(
