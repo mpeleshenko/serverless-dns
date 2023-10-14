@@ -29,6 +29,7 @@ WORKER_ENV = "development"
 CLOUD_PLATFORM = "cloudflare"
 CF_DNS_RESOLVER_URL = "https://dns.google.com/dns-query"
 MAX_DNS_RESOLVER_URL = "https://dns.google.com/dns-query"
+PROFILE_DNS_RESOLVES=true
 
 ##################
 #------PROD------#
@@ -48,6 +49,7 @@ WORKER_ENV = "production"
 CLOUD_PLATFORM = "cloudflare"
 CF_DNS_RESOLVER_URL = "https://dns.google.com/dns-query"
 MAX_DNS_RESOLVER_URL = "https://dns.google.com/dns-query"
+PROFILE_DNS_RESOLVES=true
 
 ##################
 #------ONE-------#

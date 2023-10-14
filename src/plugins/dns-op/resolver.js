@@ -259,6 +259,16 @@ export default class DNSResolver {
 
     const r = await this.makeRdnsResponse(rxid, ans, blf, stamps);
 
+    if (r.dnsPacket.rcode === "REFUSED") {
+      // If REFUSED try to resolve again without ECS
+      const [requestDecodedDnsPacket, ecsdropped] = dnsutil.dropECS(ctx.requestDecodedDnsPacket);
+      if (ecsdropped) {
+        ctx.requestDecodedDnsPacket = requestDecodedDnsPacket;
+        ctx.requestBodyBuffer = dnsutil.encode(requestDecodedDnsPacket);
+        return await this.resolveDns(ctx)
+      }
+    }
+
     // blockAnswer is a no-op if the ans is already quad0
     // check outgoing cached dns-packet against blocklists
     this.blocker.blockAnswer(rxid, /* out*/ r, blInfo);
