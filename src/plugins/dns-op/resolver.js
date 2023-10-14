@@ -46,7 +46,9 @@ export default class DNSResolver {
     // p75 (.004 => .007); p99 (.026 => .039); p99.9 (.069 => .126)
     // it turned out that the trie-cache wasn't being used at all due to
     // a missing version bump (npm update fixed it).
-    this.bgBwInit = envutil.bgDownloadBlocklistWrapper();
+    // this.bgBwInit = envutil.bgDownloadBlocklistWrapper();
+    // Force disable background blocklist init for all queries to go to Google DNS with ECS
+    this.bgBwInit = false;
     this.maxDoh = envutil.maxDohUrl();
 
     if (this.profileResolve) {
