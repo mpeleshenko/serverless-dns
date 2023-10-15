@@ -53,7 +53,7 @@ on:
 env:
   GIT_REF: ${{ github.event.inputs.commit || github.ref }}
   # default is 'dev' which is really empty/no env
-  WORKERS_ENV: ''
+  WORKERS_ENV: 'prod'
 
 jobs:
   deploy:
